@@ -41,8 +41,8 @@ jobs:
       # Step 6: Commit and push the modified ICS file using GITHUB_TOKEN
       - name: Commit and push modified ICS file
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git add modified_cal_lunar.ics
           git commit -m "Update modified_cal_lunar.ics"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
