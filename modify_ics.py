@@ -2,13 +2,13 @@ import requests
 import re
 from icalendar import Calendar, Event
 
-# 定义提取“日”的函数，正则匹配最后的“日”
-def extract_day(summary):
-    # 正则提取“日”前的部分内容
-    match = re.search(r'(\S+日)$', summary)
+# 定义提取时和日的函数，去掉前后的『』
+def format_summary(summary):
+    # 正则提取时和日的部分
+    match = re.search(r'([^\s]+时 [^\s]+日)', summary)
     if match:
-        return match.group(1)  # 返回“日”字前的部分
-    return summary  # 如果没有找到“日”，则返回原内容
+        return match.group(1)  # 只返回提取出的“时”和“日”
+    return summary  # 如果没有找到匹配的内容，返回原内容
 
 def modify_ics(url, file_name, summary_modifier=None):
     # 获取 ICS 文件
@@ -29,7 +29,7 @@ def modify_ics(url, file_name, summary_modifier=None):
             component['summary'] = location  # 设置新的 summary 为原来的 location
             component['location'] = None  # 清空 location 字段
 
-            # 提取 summary 中的“日”部分，如果指定了 summary_modifier 函数
+            # 使用传入的 summary_modifier 函数修改 summary
             if summary_modifier:
                 component['summary'] = summary_modifier(summary)  # 修改 summary
 
@@ -43,19 +43,12 @@ def modify_ics(url, file_name, summary_modifier=None):
 modify_ics(
     'https://yangh9.github.io/ChinaCalendar/cal_lunar.ics', 
     'modified_cal_lunar.ics', 
-    summary_modifier=lambda summary: extract_day(summary)
+    summary_modifier=lambda summary: format_summary(summary)
 )
 
 # 修改 cal_trunkBranch.ics 文件
-def trunk_branch_modifier(summary):
-    # 提取并保留 `乙丑时 甲子日`
-    match = re.search(r'([^\s]+时 [^\s]+日)', summary)
-    if match:
-        return match.group(1)  # 返回 `乙丑时 甲子日`
-    return summary  # 如果没有找到，则返回原内容
-
 modify_ics(
     'https://yangh9.github.io/ChinaCalendar/cal_trunkBranch.ics',
     'modified_cal_trunkBranch.ics',
-    summary_modifier=trunk_branch_modifier
+    summary_modifier=lambda summary: format_summary(summary)
 )
