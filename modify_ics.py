@@ -1,34 +1,26 @@
-import os
 import requests
-from icalendar import Calendar
+from icalendar import Calendar, Event
 
-# Step 1: Download the ICS file from the URL
-url = "https://yangh9.github.io/ChinaCalendar/cal_lunar.ics"
+# 获取 ICS 文件
+url = 'https://yangh9.github.io/ChinaCalendar/cal_lunar.ics'
 response = requests.get(url)
 ics_data = response.text
 
-# Step 2: Parse the ICS data using icalendar
+# 解析 ICS 文件
 calendar = Calendar.from_ical(ics_data)
 
-# Step 3: Modify each event
+# 修改每个事件
 for component in calendar.walk('vevent'):
-    # Get the current LOCATION and SUMMARY values
-    location = component.get('LOCATION', '')
-    summary = component.get('SUMMARY', '')
-    
-    if location:
-        # Update SUMMARY to LOCATION value
-        component['SUMMARY'] = f"『{location}』"
-        # Remove LOCATION
-        del component['LOCATION']
+    summary = component.get('summary')
+    location = component.get('location')
 
-# Step 4: Save the modified ICS data to a new file
-output_path = 'modified_cal_lunar.ics'
+    # 只在 summary 和 location 都存在的情况下修改
+    if summary and location:
+        component['summary'] = location  # 设置 summary 为 location
+        component['location'] = None  # 清空 location 字段
 
-# Debug: print the current working directory
-print(f"Current working directory: {os.getcwd()}")
+# 保存修改后的 ICS 文件
+with open('modified_cal_lunar.ics', 'wb') as f:
+    f.write(calendar.to_ical())  # 写入时使用二进制模式以确保编码
 
-with open(output_path, 'wb') as f:
-    f.write(calendar.to_ical())
-
-print(f"ICS file saved as {output_path}.")
+print("ICS file has been modified successfully.")
