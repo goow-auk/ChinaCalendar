@@ -25,10 +25,13 @@ for component in calendar.walk('vevent'):
 
     # 只在 summary 和 location 都存在的情况下修改
     if summary and location:
-        # 提取summary中的“日”部分
-        new_summary = extract_day(summary)
-        component['summary'] = new_summary  # 设置新的 summary
+        # 交换 summary 和 location 的内容
+        component['summary'] = location  # 设置新的 summary 为原来的 location
         component['location'] = None  # 清空 location 字段
+
+        # 提取summary中的“日”部分
+        new_summary = extract_day(component['summary'])
+        component['summary'] = new_summary  # 设置新的 summary
 
 # 保存修改后的 ICS 文件，强制指定 UTF-8 编码
 with open('modified_cal_lunar.ics', 'wb') as f:
