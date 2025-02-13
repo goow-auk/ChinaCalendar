@@ -2,13 +2,17 @@ import requests
 import re
 from icalendar import Calendar, Event
 
-# 定义提取时和日的函数，去掉前后的『』
+# 定义提取时和日的函数，去掉『』符号及其他多余字符
 def format_summary(summary):
+    # 清理掉 '『』' 和任何换行符
+    cleaned_summary = summary.replace('『', '').replace('』', '').strip()
+    
     # 正则提取时和日的部分
-    match = re.search(r'([^\s]+时 [^\s]+日)', summary)
+    match = re.search(r'([^\s]+时 [^\s]+日)', cleaned_summary)
     if match:
         return match.group(1)  # 只返回提取出的“时”和“日”
-    return summary  # 如果没有找到匹配的内容，返回原内容
+    
+    return cleaned_summary  # 如果没有找到匹配的内容，返回原内容
 
 def modify_ics(url, file_name, summary_modifier=None):
     # 获取 ICS 文件
