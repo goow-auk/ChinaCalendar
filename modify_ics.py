@@ -1,6 +1,6 @@
+import os
 import requests
 from icalendar import Calendar
-from io import StringIO
 
 # Step 1: Download the ICS file from the URL
 url = "https://yangh9.github.io/ChinaCalendar/cal_lunar.ics"
@@ -23,7 +23,12 @@ for component in calendar.walk('vevent'):
         del component['LOCATION']
 
 # Step 4: Save the modified ICS data to a new file
-with open('modified_cal_lunar.ics', 'wb') as f:
+output_path = 'modified_cal_lunar.ics'
+
+# Debug: print the current working directory
+print(f"Current working directory: {os.getcwd()}")
+
+with open(output_path, 'wb') as f:
     f.write(calendar.to_ical())
 
-print("ICS file modified successfully.")
+print(f"ICS file saved as {output_path}.")
