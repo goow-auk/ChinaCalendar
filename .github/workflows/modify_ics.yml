@@ -9,6 +9,11 @@ on:
 jobs:
   modify_ics:
     runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
     
     steps:
       # Step 1: Checkout the repository
@@ -32,7 +37,7 @@ jobs:
         run: |
           ls -l
 
-      # Step 6: Commit and push the modified ICS file using GITHUB_TOKEN
+      # Step 5: Commit and push the modified ICS file 
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
