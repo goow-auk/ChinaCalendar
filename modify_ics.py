@@ -4,7 +4,7 @@ from icalendar import Calendar, Event
 # 获取 ICS 文件
 url = 'https://yangh9.github.io/ChinaCalendar/cal_lunar.ics'
 response = requests.get(url)
-ics_data = response.text
+ics_data = response.content  # 使用 .content 获取字节数据
 
 # 解析 ICS 文件
 calendar = Calendar.from_ical(ics_data)
@@ -19,8 +19,8 @@ for component in calendar.walk('vevent'):
         component['summary'] = location  # 设置 summary 为 location
         component['location'] = None  # 清空 location 字段
 
-# 保存修改后的 ICS 文件
-with open('modified_cal_lunar.ics', 'wb') as f:
-    f.write(calendar.to_ical())  # 写入时使用二进制模式以确保编码
+# 保存修改后的 ICS 文件，强制指定 UTF-8 编码
+with open('modified_cal_lunar.ics', 'wb') as f:  # 使用二进制写入
+    f.write(calendar.to_ical())  # 写入时不需要额外的编码转换
 
 print("ICS file has been modified successfully.")
