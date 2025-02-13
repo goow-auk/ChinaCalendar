@@ -1,0 +1,25 @@
+name: Modify ICS Calendar
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  modify_ics:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          pip3 install icalendar requests
+
+      - name: Download and modify ICS
+        run: |
+          python3 modify_ics.py
