@@ -1,9 +1,9 @@
 name: Modify ICS Calendar
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 jobs:
@@ -23,3 +23,7 @@ jobs:
       - name: Download and modify ICS
         run: |
           python3 modify_ics.py
+
+      - name: List files in the directory
+        run: |
+          ls -l
