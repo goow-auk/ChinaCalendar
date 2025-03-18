@@ -1,9 +1,8 @@
 name: Modify ICS Calendar
 
 on:
-  # push:
-  #   branches:
-  #     - main
+  schedule:
+    - cron: "0 0 1 * *"  # 每月1日 00:00 UTC 运行
   workflow_dispatch:
 
 jobs:
@@ -11,33 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      # Give the default GITHUB_TOKEN write permission to commit and push the
-      # added or changed files to the repository.
       contents: write
     
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      # Step 2: Install dependencies
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y python3 python3-pip
           pip3 install icalendar requests
 
-      # Step 3: Download and modify ICS file
       - name: Download and modify ICS
         run: |
           python3 modify_ics.py
 
-      # Step 4: List files in the directory (for debugging)
       - name: List files in the directory
         run: |
           ls -l
 
-      # Step 5: Commit and push the modified ICS file 
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
